@@ -51,20 +51,20 @@ def oscarmoviestwittersearch():
         file.write(str(i)+'\n')
     file.close()
 
-    file = open('bestoscarmoviesentiments.txt','w')
-    for i in L2:
-        file.write(str(i)+'\n')
-    file.close()
+#    file = open('bestoscarmoviesentiments.txt','w')
+#    for i in L2:
+#        file.write(str(i)+'\n')
+#    file.close()
 
 def openbestoscarmoviefiletweets():
     with open('bestoscarmovietweets.txt','r') as myfile:
         data = myfile.readlines()
     return data
     
-def openbestoscarmoviefilesents():
-    with open('bestoscarmoviesentiments.txt','r') as myfilesent:
-        datasent = myfilesent.readlines()
-    return datasent
+#def openbestoscarmoviefilesents():
+#    with open('bestoscarmoviesentiments.txt','r') as myfilesent:
+#        datasent = myfilesent.readlines()
+#    return datasent
 
 def makingtweetslowercase(data):
     tweets = []
@@ -72,42 +72,9 @@ def makingtweetslowercase(data):
         tweets.append(data[i].lower())
     return tweets
 
-def bestoscarmovieindex(lower_case_list):
-    index = []    
-    index_12yearsaslave = []
-    index_wolf = []
-    index_nebraska = []
-    index_captainphillips = []
-    index_dallas = []
-    index_ah = []
-    index_gravity = []
-    index_her = []
-    index_philomena = []
-    
-    for i in range(len(lower_case_list)):
-        if '12 years a slave' in lower_case_list[i]:
-            index_12yearsaslave.append(i)
-        if 'wolf of wall street' in lower_case_list[i]:
-            index_wolf.append(i)
-        if 'nebraska' in lower_case_list[i]:
-            index_nebraska.append(i)
-        if 'gravity' in lower_case_list[i]:
-            index_gravity.append(i)
-        if 'captain phillips' in lower_case_list[i]:
-            index_captainphillips.append(i)
-        if 'dallas buyers club' in lower_case_list[i]:
-            index_dallas.append(i)
-        if 'american hustle' in lower_case_list[i]:
-            index_ah.append(i)
-        if '#her' in lower_case_list[i]:
-            index_her.append(i)
-        if 'philomena' in lower_case_list[i]:
-            index_philomena.append(i)
-    index = (index_12yearsaslave, index_wolf, index_nebraska, index_gravity, index_captainphillips, index_dallas, index_ah, index_gravity, index_her, index_philomena)
-    return index
-    
+
+
 def index_to_sentiment(index):
-    sent_data = openbestoscarmoviefilesents()
     for i in range(len(index)):
         if i == 0:
             sent_12 = index[i]
@@ -203,6 +170,45 @@ all of our time tomorrow so let's just work on this and forget the rest."""
 #        print sentiment(tweet.text)
 
 if __name__ == "__main__":
+    
     lower_case_list = makingtweetslowercase(openbestoscarmoviefiletweets())
-    index = bestoscarmovieindex(lower_case_list)
-    index_to_sentiment(index)
+    
+    index_12yearsaslave = []
+    index_wolf = []
+    index_nebraska = []
+    index_captainphillips = []
+    index_dallas = []
+    index_ah = []
+    index_gravity = []
+    index_her = []
+    index_philomena = []
+        
+    for i in range(len(lower_case_list)):
+        if '12 years a slave' in lower_case_list[i]:
+            index_12yearsaslave.append(i)
+        if 'wolf of wall street' in lower_case_list[i]:
+            index_wolf.append(i)
+        if 'nebraska' in lower_case_list[i]:
+            index_nebraska.append(i)
+        if 'gravity' in lower_case_list[i]:
+            index_gravity.append(i)
+        if 'captain phillips' in lower_case_list[i]:
+            index_captainphillips.append(i)
+        if 'dallas buyers club' in lower_case_list[i]:
+            index_dallas.append(i)
+        if 'american hustle' in lower_case_list[i]:
+            index_ah.append(i)
+        if '#her' in lower_case_list[i]:
+            index_her.append(i)
+        if 'philomena' in lower_case_list[i]:
+            index_philomena.append(i)
+    
+    x = []
+    for j in index_12yearsaslave:
+        x.append((sentiment(lower_case_list[j])))
+    for i in x:
+        print i[0]
+        
+#    sent_data = openbestoscarmoviefilesents()
+##    for i in index_12yearsaslave:
+#    print sent_data[88]
