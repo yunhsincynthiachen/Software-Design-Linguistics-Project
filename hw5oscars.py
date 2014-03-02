@@ -73,12 +73,74 @@ def makingtweetslowercase(data):
     return tweets
 
 def bestoscarmovieindex(lower_case_list):
-    index = []
+    index = []    
+    index_12yearsaslave = []
+    index_wolf = []
+    index_nebraska = []
+    index_captainphillips = []
+    index_dallas = []
+    index_ah = []
+    index_gravity = []
+    index_her = []
+    index_philomena = []
+    
     for i in range(len(lower_case_list)):
         if '12 years a slave' in lower_case_list[i]:
-            index.append(i)
+            index_12yearsaslave.append(i)
+        if 'wolf of wall street' in lower_case_list[i]:
+            index_wolf.append(i)
+        if 'nebraska' in lower_case_list[i]:
+            index_nebraska.append(i)
+        if 'gravity' in lower_case_list[i]:
+            index_gravity.append(i)
+        if 'captain phillips' in lower_case_list[i]:
+            index_captainphillips.append(i)
+        if 'dallas buyers club' in lower_case_list[i]:
+            index_dallas.append(i)
+        if 'american hustle' in lower_case_list[i]:
+            index_ah.append(i)
+        if '#her' in lower_case_list[i]:
+            index_her.append(i)
+        if 'philomena' in lower_case_list[i]:
+            index_philomena.append(i)
+    index = (index_12yearsaslave, index_wolf, index_nebraska, index_gravity, index_captainphillips, index_dallas, index_ah, index_gravity, index_her, index_philomena)
     return index
     
+def index_to_sentiment(index):
+    sent_data = openbestoscarmoviefilesents()
+    for i in range(len(index)):
+        if i == 0:
+            sent_12 = index[i]
+        if i == 1:
+            sent_wolf = index[i]
+        if i == 2:
+            sent_nebraska = index[i]
+        if i == 3:
+            sent_gravity = index[i]
+        if i == 4:
+            sent_cp = index[i]
+        if i == 5:
+            sent_dalla = index[i]
+        if i == 6:
+            sent_ah = index[i]
+        if i == 7:
+            sent_her = index[i]
+        if i == 8:
+            sent_philomena = index[i]
+    for i in range(len(sent_12)):
+        print sent_data[i]
+        for j in sent_data[i]:
+            print j
+
+""" Yo Cynthia. This code above is gross and repetitive but I had no alternative in terms of mapping all the
+indices of the relevant tweets and then concatenating all of that in a list of lists and then looping through
+each list and then remapping back into indvidiual lists of indices for each movie. This is all to find the
+sentiment values. But as I got there, I realized all our sentiment values are in a string format and I could
+not super easily average all of them. Its now midngiht and I'm giving up but we have to work on this tomorrow.
+"""
+""" P.S. I also don't think we have time to do the best actor / best actress / best director. This is going to take
+all of our time tomorrow so let's just work on this and forget the rest."""
+        
 ################################
 
 #bestactor = {'\"Leonardo\"Dicaprio\"':'\"oscars\"best actor\"will win',
@@ -142,4 +204,5 @@ def bestoscarmovieindex(lower_case_list):
 
 if __name__ == "__main__":
     lower_case_list = makingtweetslowercase(openbestoscarmoviefiletweets())
-    print bestoscarmovieindex(lower_case_list)
+    index = bestoscarmovieindex(lower_case_list)
+    index_to_sentiment(index)
