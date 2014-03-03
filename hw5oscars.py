@@ -159,62 +159,346 @@ if __name__ == "__main__":
 
 ################################
 
-#bestactor = {'\"Leonardo\"Dicaprio\"':'\"oscars\"best actor\"will win',
-#             '\"Matthew\"Mcconaughey\"':'\"oscars\"best actor\"will win',
-#             '\"Christian\"Bale\"': '\"oscars\"best actor\"will win',
-#             '\"Bruce\"Dern\"':'\"oscars\"best actor\"will win',
-#             '\"Chiwetel\"Ejiofor\"':'\"oscars\"best actor\"will win'}
-#
-#ba = bestactor
-#
-#for key, val in ba.iteritems():
-#    print key,val
-#t = Twitter()
-#for key in ba:
-#    for tweet in t.search(key + ' ' + ba[key]):
-#        print tweet.text
-#        print ""
-#        i = tweet.id
-#        print sentiment(tweet.text)
-#        print ""
-#        
-#################################
-#
-#bestactress = {'\"Amy Adams\"':'\"oscars\"best actress\"will win',
-#               '\"Cate Blanchett\"':'\"oscars\"best actress\"will win',
-#               '\"Sandra Bullock\"':'\"oscars\"best actress\"will win',
-#               '\"Judi Dench\"':'\"oscars\"best actress\"will win',
-#               '\"Meryl Streep\"':'\"oscars\"best actress\"will win'}
-#              
-#bas = bestactress
-#
-#for key,val in bas.iteritems():
-#    print key,val
-#t = Twitter()
-#for key in bas:
-#    for tweet in t.search(key+ ' ' + bas[key]):
-#        print tweet.text
-#        print ""
-#        i = tweet.id
-#        print sentiment(tweet.text)
-#        
-####################################
-#
-#bestdirector = {'\"David O\'Russell\"':'\"oscars\"best director\"will win',
-#                '\"Alfonso Cuaron\"': '\"oscars\"best director\"will win',
-#                '\"Alexander Payne\"':'\"oscars\"best director\"will win',
-#                '\"Steve McQueen\"':'\"oscars\"best director\"will win',
-#                '\"Martin Scorsese\"':'\"oscars\"best director\"will win'}
-#                
-#bd = bestdirector
-#
-#for key,val in bd.iteritems():
-#    print key,val
-#t = Twitter()
-#for key in bd:
-#    for tweet in t.search(key+ ' ' + bd[key]):
-#        print tweet.text
-#        print ""
-#        i = tweet.id
-#        print sentiment(tweet.text)
+bestactor = {'\"Leonardo\"Dicaprio\"':'\"oscars\"best actor\"will win',
+            '\"Matthew\"Mcconaughey\"':'\"oscars\"best actor\"will win',
+            '\"Christian\"Bale\"': '\"oscars\"best actor\"will win',
+            '\"Bruce\"Dern\"':'\"oscars\"best actor\"will win',
+            '\"Chiwetel\"Ejiofor\"':'\"oscars\"best actor\"will win'}
+ba = bestactor
 
+def bestactortwittersearch():
+    """ This function, which we only run once, produces a set of tweets that we can work with in a plaintext
+    file. The output of this function is a file containing all of our tweets, separated by /n """
+    L3 = []
+    L4 = []
+    t = Twitter()
+    for key in ba:  #loops through all the keys in the dictionary, searching tweets for movie titles and words "Oscars", "will", and "win"
+        for tweet in t.search(key + ' ' + ba[key]):
+            L3.append(tweet.text)
+            L4.append(sentiment(tweet.text))
+
+    file = open('bestactortweets.txt','w') #opens a new file, writes all of our tweets to this file, and closes file
+    for i in L3:
+        file.write(str(i)+'\n')
+    file.close()
+
+def openbestactorfiletweets():
+    """ This function opens the plaintext file and outputs it as a varaible that can be called"""
+    with open('bestactortweets.txt','r') as myfile2:
+        data2 = myfile2.readlines()
+    return data2
+    
+def makingactortweetslowercase(data2):
+    """This helps us search through all of the tweets by making all of the text in the tweets lowercase. The 
+    function also creates a list of all our tweets which makes it easy for us to loop through them and search
+    for the relevant information we need"""
+    tweets2 = []
+    for i in range(len(data2)):
+        tweets2.append(data2[i].lower())  #so we simultaneously make all of the tweets lowercase while appending them to a list
+    return tweets2
+    
+def findingactor_sentiment_analysis(index2, lower_case_list2):
+    """ This function takes as input a list of all the indices for the tweets which mentioned the relevant movie
+    and the full data-set of tweets. Then, using the indices it has found, it produces the indvidual sentiments
+    of each relevant tweet. """
+    sent_index2 = []
+    for j in index2: #loops through all the relevant tweets that pertain to each movie, find the sentiment analysis, and append it to a list
+        sent_index2.append((sentiment(lower_case_list2[j])))
+    return sent_index2
+
+def findingactor_tot_sentiment_for_movie(sent_index2):
+    """ This function takes as input the list of all of the sentiments, takes only the first sentiment value which
+    indicates the postivity or negatviity of the tweet, and sums all of the sentiments """
+    tot_sent2 = 0    #initializes starting value for total sentiment for each movie at 0
+    for i in sent_index2:
+        tot_sent2 += i[0]
+    return tot_sent2
+    
+##############################################################################################################
+
+if __name__ == "__main__":
+    lower_case_list2 = makingactortweetslowercase(openbestactorfiletweets()) #lower_case_list contains all of the tweets, in lowercase, in a list
+    
+    #we initialize a bunch of empty lists to store the indices of each tweet that contain any of these movie names
+    index_leonardo = []
+    index_matthew = []
+    index_christian = []
+    index_bruce = []
+    index_chiwetel = []
+
+    for i in range(len(lower_case_list2)):
+        if 'leonardo' in lower_case_list2[i]:
+            index_leonardo.append(i)
+        if 'matthew' in lower_case_list2[i]:
+            index_matthew.append(i)
+        if 'christian' in lower_case_list2[i]:
+            index_christian.append(i)
+        if 'bruce' in lower_case_list2[i]:
+            index_bruce.append(i)
+        if 'chiwetel' in lower_case_list2[i]:
+            index_chiwetel.append(i)
+
+    
+    #we chose to do this outside of a function so that we have access to all of these lists individually, without appending them all into one huge list
+    
+    sent_leonardo = findingactor_sentiment_analysis(index_leonardo, lower_case_list2)
+    sent_matthew = findingactor_sentiment_analysis(index_matthew, lower_case_list2)
+    sent_christian = findingactor_sentiment_analysis(index_christian, lower_case_list2)
+    sent_bruce = findingactor_sentiment_analysis(index_bruce, lower_case_list2)
+    sent_chiwetel = findingactor_sentiment_analysis(index_chiwetel, lower_case_list2)
+
+
+    l = findingactor_tot_sentiment_for_movie(sent_leonardo)
+    m = findingactor_tot_sentiment_for_movie(sent_matthew)
+    n = findingactor_tot_sentiment_for_movie(sent_christian)
+    o = findingactor_tot_sentiment_for_movie(sent_bruce)
+    p = findingactor_tot_sentiment_for_movie(sent_chiwetel)
+
+    
+    #using matplotlib to produce a pie chart of the probabilities of each movie to win Best Picture for the Oscars
+    sumofsentiments2 = (l+m+n+o+p)/100
+    sizes2 = [l/sumofsentiments2,
+             m/sumofsentiments2,
+             n/sumofsentiments2,
+             o/sumofsentiments2,
+             p/sumofsentiments2]
+    
+    labels2 = ['Leonardo Dicaprio','Matthew Mcconaughey','Christian Bale','Bruce Dern','Chiwetel Ejiofor']
+    colors = ['yellowgreen','gold','orange','red','lightskyblue']
+    font = {'size':12}    
+    plt.rc('font',**font)
+    plt.pie(sizes2,labels=labels2,colors=colors,autopct='%1.1f%%')
+    plt.axis('equal')
+    plt.show()
+    
+#################################
+
+bestactress = {'\"Amy Adams\"':'\"oscars\"best actress\"will win',
+              '\"Cate Blanchett\"':'\"oscars\"best actress\"will win',
+              '\"Sandra Bullock\"':'\"oscars\"best actress\"will win',
+              '\"Judi Dench\"':'\"oscars\"best actress\"will win',
+              '\"Meryl Streep\"':'\"oscars\"best actress\"will win'}
+             
+bas = bestactress
+
+
+def bestactresstwittersearch():
+    """ This function, which we only run once, produces a set of tweets that we can work with in a plaintext
+    file. The output of this function is a file containing all of our tweets, separated by /n """
+    L5 = []
+    L6 = []
+    t = Twitter()
+    for key in bas:  #loops through all the keys in the dictionary, searching tweets for movie titles and words "Oscars", "will", and "win"
+        for tweet in t.search(key + ' ' + bas[key]):
+            L5.append(tweet.text)
+            L6.append(sentiment(tweet.text))
+
+    file = open('bestactresstweets.txt','w') #opens a new file, writes all of our tweets to this file, and closes file
+    for i in L5:
+        file.write(str(i)+'\n')
+    file.close()
+
+def openbestactressfiletweets():
+    """ This function opens the plaintext file and outputs it as a varaible that can be called"""
+    with open('bestactresstweets.txt','r') as myfile3:
+        data3 = myfile3.readlines()
+    return data3
+    
+def makingactresstweetslowercase(data3):
+    """This helps us search through all of the tweets by making all of the text in the tweets lowercase. The 
+    function also creates a list of all our tweets which makes it easy for us to loop through them and search
+    for the relevant information we need"""
+    tweets3 = []
+    for i in range(len(data3)):
+        tweets3.append(data3[i].lower())  #so we simultaneously make all of the tweets lowercase while appending them to a list
+    return tweets3
+    
+def findingactress_sentiment_analysis(index3, lower_case_list3):
+    """ This function takes as input a list of all the indices for the tweets which mentioned the relevant movie
+    and the full data-set of tweets. Then, using the indices it has found, it produces the indvidual sentiments
+    of each relevant tweet. """
+    sent_index3 = []
+    for j in index3: #loops through all the relevant tweets that pertain to each movie, find the sentiment analysis, and append it to a list
+        sent_index3.append((sentiment(lower_case_list3[j])))
+    return sent_index3
+
+def findingactress_tot_sentiment_for_movie(sent_index3):
+    """ This function takes as input the list of all of the sentiments, takes only the first sentiment value which
+    indicates the postivity or negatviity of the tweet, and sums all of the sentiments """
+    tot_sent3 = 0    #initializes starting value for total sentiment for each movie at 0
+    for i in sent_index3:
+        tot_sent3 += i[0]
+    return tot_sent3
+    
+##############################################################################################################
+
+if __name__ == "__main__":
+    lower_case_list3 = makingactresstweetslowercase(openbestactressfiletweets()) #lower_case_list contains all of the tweets, in lowercase, in a list
+    
+    #we initialize a bunch of empty lists to store the indices of each tweet that contain any of these movie names
+    index_amy = []
+    index_cate = []
+    index_sandra = []
+    index_judi = []
+    index_meryl = []
+
+    for i in range(len(lower_case_list3)):
+        if 'amy' in lower_case_list3[i]:
+            index_amy.append(i)
+        if 'cate' in lower_case_list3[i]:
+            index_cate.append(i)
+        if 'sandra' in lower_case_list3[i]:
+            index_sandra.append(i)
+        if 'judi' in lower_case_list3[i]:
+            index_judi.append(i)
+        if 'meryl' in lower_case_list3[i]:
+            index_meryl.append(i)
+
+    
+    #we chose to do this outside of a function so that we have access to all of these lists individually, without appending them all into one huge list
+    
+    sent_amy = findingactress_sentiment_analysis(index_amy, lower_case_list3)
+    sent_cate = findingactress_sentiment_analysis(index_cate, lower_case_list3)
+    sent_sandra = findingactress_sentiment_analysis(index_sandra, lower_case_list3)
+    sent_judi = findingactress_sentiment_analysis(index_judi, lower_case_list3)
+    sent_meryl = findingactress_sentiment_analysis(index_meryl, lower_case_list3)
+
+
+    q = findingactress_tot_sentiment_for_movie(sent_amy)
+    r = findingactress_tot_sentiment_for_movie(sent_cate)
+    s = findingactress_tot_sentiment_for_movie(sent_sandra)
+    t = findingactress_tot_sentiment_for_movie(sent_judi)
+    u = findingactress_tot_sentiment_for_movie(sent_meryl)
+
+    
+    #using matplotlib to produce a pie chart of the probabilities of each movie to win Best Picture for the Oscars
+    sumofsentiments3 = (q+r+s+t+u)/100
+    sizes3 = [q/sumofsentiments3,
+             r/sumofsentiments3,
+             s/sumofsentiments3,
+             t/sumofsentiments3,
+             u/sumofsentiments3]
+    
+    labels3 = ['Amy Adams','Cate Blanchett','Sandra Bullock','Judi Dench','Meryl Streep']
+    colors = ['yellowgreen','gold','orange','red','lightskyblue']
+    font = {'size':12}    
+    plt.rc('font',**font)
+    plt.pie(sizes3,labels=labels3,colors=colors,autopct='%1.1f%%')
+    plt.axis('equal')
+    plt.show()
+    
+####################################
+
+bestdirector = {'\"David O\'Russell\"':'\"oscars\"best director\"will win',
+               '\"Alfonso Cuaron\"': '\"oscars\"best director\"will win',
+               '\"Alexander Payne\"':'\"oscars\"best director\"will win',
+               '\"Steve McQueen\"':'\"oscars\"best director\"will win',
+               '\"Martin Scorsese\"':'\"oscars\"best director\"will win'}
+               
+bd = bestdirector
+
+def bestdirectortwittersearch():
+    """ This function, which we only run once, produces a set of tweets that we can work with in a plaintext
+    file. The output of this function is a file containing all of our tweets, separated by /n """
+    L7 = []
+    L8 = []
+    t = Twitter()
+    for key in bd:  #loops through all the keys in the dictionary, searching tweets for movie titles and words "Oscars", "will", and "win"
+        for tweet in t.search(key + ' ' + bd[key]):
+            L7.append(tweet.text)
+            L8.append(sentiment(tweet.text))
+
+    file = open('bestdirectortweets.txt','w') #opens a new file, writes all of our tweets to this file, and closes file
+    for i in L7:
+        file.write(str(i)+'\n')
+    file.close()
+
+def openbestdirectorfiletweets():
+    """ This function opens the plaintext file and outputs it as a varaible that can be called"""
+    with open('bestdirectortweets.txt','r') as myfile4:
+        data4 = myfile4.readlines()
+    return data4
+    
+def makingdirectortweetslowercase(data4):
+    """This helps us search through all of the tweets by making all of the text in the tweets lowercase. The 
+    function also creates a list of all our tweets which makes it easy for us to loop through them and search
+    for the relevant information we need"""
+    tweets4 = []
+    for i in range(len(data4)):
+        tweets4.append(data4[i].lower())  #so we simultaneously make all of the tweets lowercase while appending them to a list
+    return tweets4
+    
+def findingdirector_sentiment_analysis(index4, lower_case_list4):
+    """ This function takes as input a list of all the indices for the tweets which mentioned the relevant movie
+    and the full data-set of tweets. Then, using the indices it has found, it produces the indvidual sentiments
+    of each relevant tweet. """
+    sent_index4 = []
+    for j in index4: #loops through all the relevant tweets that pertain to each movie, find the sentiment analysis, and append it to a list
+        sent_index4.append((sentiment(lower_case_list4[j])))
+    return sent_index4
+
+def findingdirector_tot_sentiment_for_movie(sent_index4):
+    """ This function takes as input the list of all of the sentiments, takes only the first sentiment value which
+    indicates the postivity or negatviity of the tweet, and sums all of the sentiments """
+    tot_sent4 = 0    #initializes starting value for total sentiment for each movie at 0
+    for i in sent_index4:
+        tot_sent4 += i[0]
+    return tot_sent4
+    
+##############################################################################################################
+
+if __name__ == "__main__":
+    bestdirectortwittersearch()
+    lower_case_list4 = makingdirectortweetslowercase(openbestdirectorfiletweets()) #lower_case_list contains all of the tweets, in lowercase, in a list
+    
+    #we initialize a bunch of empty lists to store the indices of each tweet that contain any of these movie names
+    index_david = []
+    index_alfonso = []
+    index_alexander = []
+    index_steve = []
+    index_martin = []
+
+    for i in range(len(lower_case_list4)):
+        if 'david' in lower_case_list4[i]:
+            index_david.append(i)
+        if 'alfonso' in lower_case_list4[i]:
+            index_alfonso.append(i)
+        if 'alexander' in lower_case_list4[i]:
+            index_alexander.append(i)
+        if 'steve' in lower_case_list4[i]:
+            index_steve.append(i)
+        if 'martin' in lower_case_list4[i]:
+            index_martin.append(i)
+
+    
+    #we chose to do this outside of a function so that we have access to all of these lists individually, without appending them all into one huge list
+    
+    sent_david = findingdirector_sentiment_analysis(index_david, lower_case_list4)
+    sent_alfonso = findingdirector_sentiment_analysis(index_alfonso, lower_case_list4)
+    sent_alexander = findingdirector_sentiment_analysis(index_alexander, lower_case_list4)
+    sent_steve = findingdirector_sentiment_analysis(index_steve, lower_case_list4)
+    sent_martin = findingdirector_sentiment_analysis(index_martin, lower_case_list4)
+
+
+    v = findingdirector_tot_sentiment_for_movie(sent_david)
+    w = findingdirector_tot_sentiment_for_movie(sent_alfonso)
+    x = findingdirector_tot_sentiment_for_movie(sent_alexander)
+    y = findingdirector_tot_sentiment_for_movie(sent_steve)
+    z = findingdirector_tot_sentiment_for_movie(sent_martin)
+
+    
+    #using matplotlib to produce a pie chart of the probabilities of each movie to win Best Picture for the Oscars
+    sumofsentiments4 = (v+w+x+y+z)/100
+    sizes4 = [v/sumofsentiments4,
+             w/sumofsentiments4,
+             x/sumofsentiments4,
+             y/sumofsentiments4,
+             z/sumofsentiments4]
+    
+    labels4 = ['David O\'Russell','Alfonso Cuaron','Alexander Payne','Steve Mcqueen','Martin Scorsese']
+    colors = ['yellowgreen','gold','orange','red','lightskyblue']
+    font = {'size':12}    
+    plt.rc('font',**font)
+    plt.pie(sizes4,labels=labels4,colors=colors,autopct='%1.1f%%')
+    plt.axis('equal')
+    plt.show()
